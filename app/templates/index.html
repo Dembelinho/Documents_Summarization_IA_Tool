@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4"> 📄 Document Summarizer</h1>
+
+    <div id="upload-form" class="card shadow p-4">
+        <form id="documentForm" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="file" class="form-label">Choose a file (PDF, TXT, DOCX, or DOC)</label>
+                <input type="file" name="file" id="file" accept=".txt,.pdf,.docx,.doc" class="form-control" required>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="language" class="form-label">Language :</label>
+                    <select name="language" id="language" class="form-select">
+                        <option value="english">English</option>
+                        <option value="french">French</option>
+                        <!-- YOU can add more languages as needed -->
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="summary_type" class="form-label">Summary type :</label>
+                    <select name="summary_type" id="summary_type" class="form-select">
+                        <option value="default">Default Summary</option>
+                        <option value="bullet_points">Bullet Points</option>
+                        <option value="key_points">Key Points</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="summary_length" class="form-label">Summary Length :</label>
+                    <select name="summary_length" id="summary_length" class="form-select">
+                            <option value="concise">Concise (2-3 sentences)</option>
+                            <option value="moderate" selected>Moderate (4-5 paragraphs)</option>
+                            <option value="detailed">Detailed (Comprehensive)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" id="submit-btn" class="btn btn-primary w-100">Upload and Summarize</button>
+        </form>
+    </div>
+</div>
+
+<div id="loading" class="d-none text-center mt-4">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Processing your document...</span>
+    </div>
+    <p class="mt-2">Processing your document...</p>
+</div>
+
+<div id="result" class="result-container d-none">
+    <h2>Summary</h2>
+    <div id="summary-content" class="summary-content"></div>
+    <button id="new-document" class="secondary-button">Process Another Document</button>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    function formatSummary(text) {
+        // Convert titles to bold: **text** → <strong>text</strong>
+        text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // Convert bullet points: "- text" → "<li>text</li>"
+        text = text.replace(/- (.*?)(\n|$)/g, '<li>$1</li>');
+
+        // Wrap bullet points in <ul>
+        text = text.replace(/(<li>.*?<\/li>)/g, '<ul>$1</ul>');
+
+        // Add line breaks between paragraphs
+        text = text.replace(/\n\n/g, '<br><br>');
+
+        return text;
+    }
+
+    function showToast(message, isError = false) {
+    const toastContainer = document.getElementById("toast-container");
+    const toastMessage = document.getElementById("toast-message");
+
+    toastContainer.classList.remove("text-bg-success", "text-bg-danger");
+    toastContainer.classList.add(isError ? "text-bg-danger" : "text-bg-success");
+
+    toastMessage.textContent = message;
+    const toast = new bootstrap.Toast(toastContainer);
+    toast.show();
+}
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById('documentForm');
+        const uploadForm = document.getElementById('upload-form');
+        const loadingIndicator = document.getElementById('loading');
+        const resultContainer = document.getElementById('result');
+        const summaryContent = document.getElementById('summary-content');
+        const newDocumentBtn = document.getElementById('new-document');
+
+        // Ensure summary container is hidden on first page load
+        resultContainer.classList.add('d-none');
+
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+
+                // Show loading indicator before making the request
+                uploadForm.classList.add('d-none');
+                loadingIndicator.classList.remove('d-none');
+
+                try {
+                    const response = await fetch('/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Hide loading indicator and show result
+                        loadingIndicator.classList.add('d-none');
+                        resultContainer.classList.remove('d-none');
+
+                        summaryContent.innerHTML = formatSummary(data.summary);
+                        showToast("File processed successfully!", false);
+                    } else {
+                        throw new Error(data.error || '-- Failed to process document -- ');
+                    }
+                } catch (error) {
+                    showToast(error.message, true);
+                    loadingIndicator.classList.add('d-none');
+                    uploadForm.classList.remove('d-none');
+                }
+            });
+            // Handle "Process Another Document" button click
+            newDocumentBtn.addEventListener('click', () => {
+                resultContainer.classList.add('d-none'); // Hide summary container
+                uploadForm.classList.remove('d-none'); // Show upload form
+                form.reset(); // Reset the form inputs
+            });
+        }
+    });
+
+</script>
+
+{% endblock %}
