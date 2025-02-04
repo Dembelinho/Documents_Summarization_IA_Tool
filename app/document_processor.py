@@ -119,7 +119,7 @@ class DocumentProcessor:
 
         try:
             # Get the appropriate prompt
-            prompt = SummaryPrompt.get_prompt(summary_type, length)
+            prompt = SummaryPrompt.get_prompt(summary_type, length, language)
             # Create LLM chain
             summarization_chain = prompt | self.llm
             # Generate summary

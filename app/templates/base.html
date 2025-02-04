@@ -16,7 +16,8 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('main.index') }}">📄 D.S Tool</a>
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                <img src="/static/favicon-32x32.png" alt="logo"> D.S Tool</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -28,6 +29,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.endpoint == 'main.history' %}active{% endif %}" href="{{ url_for('main.history') }}">History</a>
+                    </li>
+                    <li class="nav-item">
+                        <!-- Dark/Light Mode Toggle -->
+                        <button id="toggle-theme" class="btn btn-outline-secondary">
+                            <i id="theme-icon" class="bi bi-moon"></i>
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -48,12 +55,6 @@
         {% endwith %}
     </div>
 
-    <!-- Dark/Light Mode Toggle -->
-    <div class="container text-end mt-3">
-        <button id="toggle-theme" class="btn btn-outline-secondary">
-            <i id="theme-icon" class="bi bi-moon"></i>
-        </button>
-    </div>
     <!-- Main Content -->
     <div class="container">
         {% block content %}{% endblock %}
@@ -74,7 +75,7 @@
             </div>
         </div>
     </div>
-
+    
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const themeToggle = document.getElementById("toggle-theme");
