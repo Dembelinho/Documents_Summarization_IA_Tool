@@ -88,6 +88,18 @@ def delete_summary(summary_id):
     return redirect(url_for('main.history'))
 
 
+@main.route('/delete_all_summaries', methods=['POST'])
+def delete_all_summaries():
+    try:
+        SummaryHistory.query.delete()
+        db.session.commit()
+        flash('All summaries deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Failed to delete all summaries.', 'danger')
+    return redirect(url_for('main.history'))
+
+
 @main.route('/download_summary/<int:summary_id>', methods=['GET'])
 def download_summary(summary_id):
     summary = SummaryHistory.query.get_or_404(summary_id)

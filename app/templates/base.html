@@ -33,7 +33,7 @@
                     <li class="nav-item">
                         <!-- Dark/Light Mode Toggle -->
                         <button id="toggle-theme" class="btn btn-outline-secondary">
-                            <i id="theme-icon" class="bi bi-moon"></i>
+                            <i id="theme-icon" class="bi bi-moon"></i> <span id="theme-text">Dark Mode</span>
                         </button>
                     </li>
                 </ul>
@@ -56,7 +56,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="container">
+    <div class="container" style="padding-bottom: 80px;">
         {% block content %}{% endblock %}
     </div>
 
@@ -75,31 +75,34 @@
             </div>
         </div>
     </div>
+
+
     
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const themeToggle = document.getElementById("toggle-theme");
             const themeIcon = document.getElementById("theme-icon");
             const body = document.body;
+            const themeText = document.getElementById("theme-text");
 
             // Load saved theme from localStorage
             if (localStorage.getItem("theme") === "dark") {
-                body.classList.add("bg-dark", "text-light");
-                themeIcon.classList.remove("bi-moon");
-                themeIcon.classList.add("bi-sun"); // Show sun icon for light mode
+                body.classList.add("dark-mode", "bg-dark", "text-light", );
+                themeIcon.classList.replace("bi-moon", "bi-sun");
+                themeText.textContent = "Light Mode";
             }
 
             themeToggle.addEventListener("click", function () {
-                if (body.classList.contains("bg-dark")) {
-                    body.classList.remove("bg-dark", "text-light");
+                if (body.classList.contains("dark-mode")) {
+                    body.classList.remove("dark-mode", "bg-dark", "text-light");
                     localStorage.setItem("theme", "light");
-                    themeIcon.classList.remove("bi-sun");
-                    themeIcon.classList.add("bi-moon"); // Show moon icon for dark mode
+                    themeIcon.classList.replace("bi-sun", "bi-moon");
+                    themeText.textContent = "Dark Mode";
                 } else {
-                    body.classList.add("bg-dark", "text-light");
+                    body.classList.add("dark-mode", "bg-dark", "text-light");
                     localStorage.setItem("theme", "dark");
-                    themeIcon.classList.remove("bi-moon");
-                    themeIcon.classList.add("bi-sun"); // Show sun icon for light mode
+                    themeIcon.classList.replace("bi-moon", "bi-sun");
+                    themeText.textContent = "Light Mode";
                 }
             });
         });
