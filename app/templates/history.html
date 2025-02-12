@@ -11,7 +11,12 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h5 class="mb-1">{{ summary.filename }}</h5>
-                    <p class="mb-1"><strong>Created at: </strong> {{ summary.created_at.strftime('%Y-%m-%d %H:%M:%S') }} GMT</p>
+                    <p class="mb-1">
+                        <strong>Created at: </strong>
+                        <span class="timestamp" data-utc="{{ summary.created_at.strftime('%Y-%m-%dT%H:%M:%SZ') }}">
+                            {{ summary.created_at.strftime('%Y-%m-%d %H:%M:%S') }} GMT
+                        </span>
+                    </p>
                     <p class="mb-1"><strong>Type:</strong> {{ summary.summary_type | capitalize }}</p>
                     <p class="mb-1"><strong>Length:</strong> {{ summary.summary_length | capitalize }}</p>
                     <div class="summary-content mt-2">
@@ -45,4 +50,16 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Convert UTC timestamp to local time
+        document.querySelectorAll(".timestamp").forEach(function(timestamp) {
+            const utcTime= timestamp.getAttribute("data-utc");
+            timestamp.textContent = new Date(utcTime).toLocaleString(undefined, {timeZoneName: "short"});
+        });
+    });
+</script>
 {% endblock %}

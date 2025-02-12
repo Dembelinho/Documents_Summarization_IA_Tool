@@ -12,3 +12,4 @@ class SummaryHistory(db.Model):
 
     def __repr__(self):
         return f"<SummaryHistory {self.filename}>"
+

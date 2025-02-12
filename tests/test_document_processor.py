@@ -14,7 +14,7 @@ class TestDocumentProcessor(unittest.TestCase):
         os.makedirs(self.test_files_dir, exist_ok=True)
 
         # Create a valid PDF file
-        self.pdf_file = os.path.join(self.test_files_dir, "test.pdf")
+
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", size=12)
