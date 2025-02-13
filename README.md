@@ -21,6 +21,10 @@ This tool provides options for different summary types and lengths and allows us
 
 ---
 
+https://github.com/user-attachments/assets/5a8034d4-27bb-47a9-8255-c9ffce811132
+
+---
+
 ## 🚀 Features
 - 📝 Upload documents for AI-generated summaries
 - ✨ Choose summary type: **Default, Bullet Points, Key Points**
